@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>ARTHUR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <style>
+      :root {
+        --system-blue: #0A84FF;
+        --system-green: #30D158;
+        --system-red: #FF453A;
+        --system-orange: #FF9F0A;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-bg-hover: rgba(255, 255, 255, 0.15);
+        --glass-bg-strong: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --glass-border-light: rgba(255, 255, 255, 0.25);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        --text-primary: #FFFFFF;
+        --text-secondary: rgba(255, 255, 255, 0.7);
+      }
+
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0; 
+        padding: 20px; 
+        min-height: 100vh;
+        background: linear-gradient(-45deg, #1a0024, #001233, #00428a, #2a2868);
+        background-size: 400% 400%;
+        animation: gradientBG 20s ease infinite;
+        color: var(--text-primary); 
+        overflow-x: hidden;
+      }
+
+      @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+      }
+
+      .container { max-width: 650px; margin: 20px auto; padding: 35px; border-radius: 28px; }
+      .dash-container { max-width: 1200px; background: #fff; color: #000; } 
+
+      h2 { margin-top: 0; font-size: 1.8em; font-weight: 700; text-align: center; color: var(--text-primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
+      .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
+      .form-group { margin-bottom: 24px; }
+      label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.85em; text-transform: uppercase; }
+      
+      input[type="text"], textarea, select, input[type="file"] { width: 100%; padding: 16px; background: var(--glass-bg-strong); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 16px; box-sizing: border-box; font-size: 16px; }
+      input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--system-blue); outline: none; }
+      select option { background: #1c1c1e; color: #fff; padding: 10px; }
+      
+      .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 30px; }
+      .cat-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 24px 15px; text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; }
+      .cat-box:hover { background: var(--glass-bg-hover); transform: scale(1.02); }
+      .cat-box.completed { background: rgba(48, 209, 88, 0.15); border-color: rgba(48, 209, 88, 0.4); pointer-events: none; }
+      .cat-box h4 { margin: 0; font-size: 0.95em; color: var(--text-primary); font-weight: 600;}
+      
+      .item-card { background: var(--glass-bg); padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--glass-border); }
+      .category-tag { background: rgba(10, 132, 255, 0.8); color: #fff; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.75em; display: inline-block; margin-bottom: 15px; }
+      h3 { margin-top: 0; font-size: 1.2em; color: var(--text-primary); font-weight: 500;}
+
+      .info-panel { background: var(--glass-bg-strong); padding: 16px; margin-top: 16px; border-radius: 14px; }
+      .info-panel h4 { margin: 0 0 8px 0; color: var(--text-secondary); font-size: 0.85em; text-transform: uppercase;}
+      .info-text { font-size: 0.95em; color: var(--text-primary); margin: 0; white-space: pre-line;}
+      
+      .buttons { display: flex; gap: 15px; margin-top: 25px; }
+      button { flex: 1; padding: 16px; border: none; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 600; background: var(--glass-bg-strong); color: var(--text-primary); border: 1px solid var(--glass-border); }
+      .btn-pass { background: rgba(48, 209, 88, 0.2); border-color: rgba(48, 209, 88, 0.4); }
+      .btn-fail { background: rgba(255, 69, 58, 0.2); border-color: rgba(255, 69, 58, 0.4); }
+      .btn-primary { background: rgba(10, 132, 255, 0.8); border-color: rgba(255,255,255,0.3); width: 100%; margin-top: 15px; }
+      .btn-publish { background: rgba(255, 159, 10, 0.8); border-color: rgba(255,255,255,0.3); width: 100%; padding: 18px; font-size: 1.1em; display: none; }
+
+      .nc-section { display: none; margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--glass-border); }
+      .file-input-wrapper { margin-top: 20px; margin-bottom: 20px; }
+      .loader { display: none; text-align: center; margin-top: 20px; color: var(--text-primary); font-weight: 500; font-size: 1em; animation: pulse 1.5s infinite alternate; }
+      @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
+
+      /* ISO SUMMARY / LIGHT DOMAIN */
+      .iso-wrapper { background: #fff; padding: 20px; border-radius: 24px; max-width: 900px; margin: auto;}
+      .iso-report { background: #fff; color: #000; padding: 40px; border: 1px solid #e5e5ea; text-align: left; border-radius: 12px; }
+      .iso-table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 30px; color: #000;}
+      .iso-table th, .iso-table td { border: 1px solid #d1d1d6; padding: 12px; text-align: left; vertical-align: top;}
+      .iso-table th { background-color: #f2f2f7; font-weight: 600; color: #000; }
+      
+      /* LEADERSHIP DASHBOARD STYLES */
+      .dash-h2 { color: #111; border-left: 4px solid #000; padding-left: 10px; margin-top: 40px; font-size: 1.4em; text-align: left; border-bottom: none;}
+      .dash-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 0.9em; color: #333; }
+      .dash-table th, .dash-table td { border: 1px solid #dddddd; padding: 10px 12px; text-align: center; vertical-align: middle; }
+      .dash-table th { background-color: #000; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 0.85em; }
+      .dash-table tbody tr:nth-child(odd) { background-color: #ffffff; }
+      .dash-table tbody tr:nth-child(even) { background-color: #f2f2f2; }
+      .table-alt-header th { background-color: #d9d9d9; color: #000; font-size: 1em; text-transform: none; text-align: left;}
+      .text-left { text-align: left !important; }
+      .red-text { color: #d32f2f; font-weight: bold; }
+      .black-text { color: #000; font-weight: bold; }
+      .bg-red { background-color: #ff4c4c !important; color: #fff !important; font-weight: bold; }
+      .dash-table a { color: #1976d2; text-decoration: underline; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="container glass-panel" id="main-container">
+      
+      <!-- 1. SETUP VIEW -->
+      <div id="setup-view">
+        <h2>ARTHUR</h2>
+        <p class="subtitle">Audit Protocol Online. Awaiting Authorization.</p>
+        <div class="form-group">
+          <label>Lead Auditor (QA):</label>
+          <input type="text" id="qa-name" placeholder="AUTHORIZATION ID">
+        </div>
+        
+        <div class="form-group">
+          <label>Target Facility:</label>
+          <select id="site-name">
+            <option value="" disabled selected>SELECT LOCATION...</option>
+            <option value="Bangalore GWIC">Bangalore GWIC</option>
+            <option value="Delhi GWIC">Delhi GWIC</option>
+            <option value="Hyderabad GWIC">Hyderabad GWIC</option>
+            <option value="Mumbai GWIC">Mumbai GWIC</option>
+            <option value="MBWIC Cochin">MBWIC Cochin</option>
+            <option value="MBWIC Kolkata">MBWIC Kolkata</option>
+            <option value="MBWIC Pune">MBWIC Pune</option>
+            <option value="MBWIC Chennai">MBWIC Chennai</option>
+            <option value="MBWIC Gurgoan">MBWIC Gurgoan</option>
+            <option value="MBWIC Lucknow">MBWIC Lucknow</option>
+            <option value="MBWIC Ahmedabad">MBWIC Ahmedabad</option>
+            <option value="MBWIC Surat">MBWIC Surat</option>
+            <option value="MBWIC Bhubaneswar">MBWIC Bhubaneswar</option>
+            <option value="MBWIC Ludhiana">MBWIC Ludhiana</option>
+            <option value="MBWIC Chandigarh">MBWIC Chandigarh</option>
+            <option value="MBWIC Jaipur">MBWIC Jaipur</option>
+            <option value="MBWIC Gazhiabad">MBWIC Gazhiabad</option>
+            <option value="MBWIC Guwahati">MBWIC Guwahati</option>
+            <option value="MBWIC Indore">MBWIC Indore</option>
+            <option value="MBWIC Raipur">MBWIC Raipur</option>
+            <option value="MBWIC Trivandrum">MBWIC Trivandrum</option>
+            <option value="MBWIC Patna">MBWIC Patna</option>
+            <option value="MBWIC Coimbatore">MBWIC Coimbatore</option>
+            <option value="MBWIC Vizag">MBWIC Vizag</option>
+            <option value="MBWIC Mangalore">MBWIC Mangalore</option>
+            <option value="MBWIC Calicut">MBWIC Calicut</option>
+          </select>
+        </div>
+        
+        <div class="form-group"><label>Facility Commander (OM):</label><input type="text" id="om-name" placeholder="OM IDENTIFICATION"></div>
+        <button class="btn-primary" onclick="startAudit()">Engage Audit Protocol</button>
+        <button class="btn-primary" onclick="showLeadershipDashboard()" style="background: var(--system-orange); margin-top: 15px;">Access Leadership Dashboard</button>
+      </div>
+
+      <!-- 2. MODULE VIEW WITH FILTER -->
+      <div id="dashboard-view" style="display:none;">
+        <h2>AUDIT MODULE</h2>
+        <p class="subtitle">System modules loaded. Clear all sectors to proceed.</p>
+        <select id="cat-filter" onchange="filterCategories()" style="margin-bottom: 20px;">
+          <option value="all">ALL CATEGORIES</option>
+        </select>
+        <div class="category-grid" id="category-grid"></div>
+        <button class="btn-publish" id="btn-publish" onclick="publishReport()">Compile Final Report</button>
+      </div>
+
+      <!-- 3. AUDIT VIEW -->
+      <div id="audit-view" style="display:none;">
+        <h2 id="progress-text" style="color:var(--text-primary); font-size: 1.2em;">SECTOR 1 OF X</h2>
+        <div class="item-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div class="category-tag" id="item-category">CATEGORY</div>
+            <div class="category-tag" style="background:var(--system-orange); border-color:var(--system-orange);" id="item-marks">MARKS: 0</div>
+          </div>
+          <h3 id="item-req">Requirement description...</h3>
+          <div class="info-panel val-panel"><h4>REVIEW METHOD</h4><p class="info-text" id="item-review">...</p></div>
+          <div class="info-panel val-panel"><h4>VALIDATION PARAMETERS</h4><p class="info-text" id="item-validate">...</p></div>
+          <div class="info-panel nc-panel"><h4>KNOWN ANOMALIES (NC)</h4><p class="info-text" id="item-ncs">...</p></div>
+
+          <div class="buttons" id="action-buttons">
+            <button class="btn-pass" onclick="markStatus('Pass')">Status: Nominal</button>
+            <button class="btn-fail" onclick="markStatus('Fail')">Anomaly Detected</button>
+          </div>
+
+          <div class="nc-section" id="nc-section">
+            <p style="color: var(--system-red); font-weight:600; margin-top:0; font-size:1.05em;" id="nc-warning-text">CRITICAL: EVIDENCE REQUIRED.</p>
+            <label>ANOMALY CLASSIFICATION</label>
+            <select id="nc-dropdown" onchange="handleDropdownChange()" style="margin-bottom: 16px;"></select>
+            <textarea id="nc-notes-custom" rows="3" placeholder="Input manual override description..." style="display:none;"></textarea>
+            <div class="file-input-wrapper" id="file-upload-container">
+              <label>VISUAL DATA UPLOAD:</label>
+              <input type="file" id="nc-image" accept="image/*" capture="environment">
+            </div>
+            <button class="btn-primary" id="btn-submit" onclick="submitCurrentItem()">Upload Log & Proceed</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="loader" id="loader">Establishing Uplink...</div>
+    </div>
+
+    <!-- 4. LEADERSHIP DASHBOARD VIEW (White Background) -->
+    <div id="leadership-dashboard-view" style="display:none;" class="container dash-container glass-panel">
+      <h2 style="color:#000; border-bottom:2px solid #000;">Leadership Audit Dashboard</h2>
+      
+      <div style="text-align: right; margin-bottom: 20px;">
+        <button class="btn-primary" onclick="refreshDashboardData()" style="width: auto; margin: 0; background: #0A84FF; color:#fff; border-radius:8px;">🔄 Sync Live Data</button>
+        <button class="btn-primary" onclick="closeLeadershipDashboard()" style="width: auto; margin: 0; background: #333; color:#fff; border-radius:8px; margin-left:10px;">Back</button>
+      </div>
+
+      <!-- TABLE 1: GWICs -->
+      <h2 class="dash-h2">1. GWICs Audit Summary</h2>
+      <table class="dash-table" id="table-gwic">
+        <thead>
+          <tr class="table-alt-header"><th colspan="6">GWICs</th></tr>
+          <tr><th width="5%">#</th><th width="30%" class="text-left">Site Name</th><th width="15%">Month</th><th width="15%">Audit Score</th><th width="20%">Status</th><th width="15%">Reports Link</th></tr>
+        </thead>
+        <tbody id="tbody-gwic"></tbody>
+      </table>
+
+      <!-- TABLE 2: MBWICs -->
+      <h2 class="dash-h2">2. MBWICs Audit Summary</h2>
+      <table class="dash-table" id="table-mbwic">
+        <thead>
+          <tr class="table-alt-header"><th colspan="6">MBWICs</th></tr>
+          <tr><th width="5%">#</th><th width="30%" class="text-left">Site Name</th><th width="15%">Month</th><th width="15%">Audit Score</th><th width="20%">Status</th><th width="15%">Reports Link</th></tr>
+        </thead>
+        <tbody id="tbody-mbwic"></tbody>
+      </table>
+
+      <!-- TABLE 3: Zonal Summary -->
+      <h2 class="dash-h2">3. Zonal Summary</h2>
+      <table class="dash-table" id="table-zonal">
+        <thead>
+          <tr class="table-alt-header" style="background:#fff; border-bottom:2px solid #000;">
+            <th width="20%" class="text-left">Zone</th><th width="16%">Branches Count</th><th width="16%">Audit done</th><th width="16%">Total NC</th><th width="16%">NC closed</th><th width="16%">NC Open</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-zonal" style="background:#fff;"></tbody>
+      </table>
+
+      <!-- TABLE 4: Consolidated Observations -->
+      <h2 class="dash-h2">4. Consolidated Audit Observations & CAPA</h2>
+      <table class="dash-table" id="table-consolidated">
+        <thead>
+          <tr>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="10%">Entity</th>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="15%">Branch Name</th>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="8%">Status</th>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="8%">No of NCs</th>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="10%">Compliance %age</th>
+            <th rowspan="2" style="background:#666;border-color:#444;" width="10%">Closure Status</th>
+            <th colspan="2" style="background:#666;border-color:#444;" width="39%">Major Observations and CAPA</th>
+          </tr>
+          <tr>
+            <th style="background:#666;border-color:#444;" width="15%">Category</th>
+            <th style="background:#666;border-color:#444;" width="24%">Observations</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-consolidated" style="background:#fff;"></tbody>
+      </table>
+
+      <!-- TABLE 5: Lacking Areas & Next Steps -->
+      <h2 class="dash-h2">5. Pre-Audit CAPA & Correction Focus</h2>
+      <table class="dash-table" id="table-capa">
+        <thead>
+          <tr><th width="20%" class="text-left">Site Name</th><th width="10%">Total NCs</th><th width="35%" class="text-left">Lacking Areas (NC Categories)</th><th width="35%" class="text-left">Corrective Action (CAPA) Before Next Audit</th></tr>
+        </thead>
+        <tbody id="tbody-capa"></tbody>
+      </table>
+    </div>
+
+    <!-- 5. ISO SUMMARY VIEW WITH EMAIL SENDER -->
+    <div id="summary-view" style="display:none;" class="iso-wrapper">
+      <div class="iso-report" id="report-content-to-copy">
+        <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:20px; margin-bottom:24px;">
+          <div><h1 style="color:#000; margin:0;">ISO 9001:2015 Audit Report</h1><h3 style="color:#666; font-weight:normal; margin:6px 0 0 0;">Process Operations Audit</h3></div>
+          <div style="text-align: right;">
+            <h3 style="margin:0; color:#666;">Audit Score</h3>
+            <h1 id="rep-score" style="margin:0; font-size:2.5em; color:var(--system-green);">0%</h1>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px; margin-bottom: 30px; font-size: 0.95em; color: #000;">
+          <div style="font-weight: 600; color: #333;">Client / Site:</div><div id="rep-site"></div>
+          <div style="font-weight: 600; color: #333;">Audit date:</div><div id="rep-date"></div>
+          <div style="font-weight: 600; color: #333;">Audit representative:</div><div id="rep-om"></div>
+          <div style="font-weight: 600; color: #333;">Lead auditor:</div><div id="rep-qa"></div>
+        </div>
+
+        <div style="background: #f2f2f7; padding: 12px 16px; font-weight: 600; color: #FF453A; margin: 30px 0 16px 0; border-radius: 8px;">Non-Conformance (NC) Summary</div>
+        <table class="iso-table">
+          <thead><tr><th width="5%">ID</th><th width="20%">Process / Area</th><th width="40%">Findings Description</th><th width="35%">Notes / CAPA</th></tr></thead>
+          <tbody id="nc-report-body"></tbody>
+        </table>
+
+        <div style="background: #f2f2f7; padding: 12px 16px; font-weight: 600; color: #000; margin: 30px 0 16px 0; border-radius: 8px;">Annex 1: Full Action List</div>
+        <table class="iso-table">
+          <thead><tr><th width="5%">ID</th><th width="20%">Process / Area</th><th width="40%">Findings Description</th><th width="10%">Type</th><th width="25%">Corrective Action</th></tr></thead>
+          <tbody id="report-body"></tbody>
+        </table>
+      </div>
+      <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+        <button class="btn-primary" onclick="copyToEmail()" style="width: auto; margin: 0;">📋 Copy to Clipboard</button>
+        <button class="btn-primary" id="btn-email-report" onclick="emailReportToSPOCs()" style="width: auto; margin: 0; background: var(--system-blue);">📧 Email Report to SPOCs</button>
+      </div>
+    </div>
+
+    <script>
+      let qaName = ""; let siteName = ""; let omName = "";
+      let fullChecklist = []; let auditReportData = []; 
+      let groupedCategories = {}; let completedCategories = new Set();
+      let currentCategoryItems = []; let currentCatName = ""; let currentIndex = 0; let currentStatus = "";
+      const exemptImageIds = [5, 102]; 
+
+      // Dashboard Data Storage
+      let gwicData = []; let mbwicData = []; let consolidatedData = []; let capaData = [];
+      const zonalData = [
+        { zone: 'Central', count: 5, done: 4, totalNC: 12, closed: 8, open: 4 },
+        { zone: 'East', count: 3, done: 3, totalNC: 5, closed: 5, open: 0 },
+        { zone: 'North 1', count: 4, done: 3, totalNC: 8, closed: 6, open: 2 },
+        { zone: 'South 1', count: 6, done: 6, totalNC: 10, closed: 8, open: 2 },
+        { zone: 'South 2', count: 2, done: 2, totalNC: 2, closed: 2, open: 0 },
+        { zone: 'West 1', count: 4, done: 4, totalNC: 6, closed: 6, open: 0 },
+        { zone: 'West 2', count: 3, done: 3, totalNC: 4, closed: 3, open: 1 }
+      ];
+
+      function showLeadershipDashboard() {
+        document.getElementById('main-container').style.display = 'none';
+        document.body.style.background = "#f4f6f9";
+        document.getElementById('leadership-dashboard-view').style.display = 'block';
+        refreshDashboardData();
+      }
+
+      function closeLeadershipDashboard() {
+        document.getElementById('leadership-dashboard-view').style.display = 'none';
+        document.body.style.background = "linear-gradient(-45deg, #1a0024, #001233, #00428a, #2a2868)";
+        document.body.style.backgroundSize = "400% 400%";
+        document.getElementById('main-container').style.display = 'block';
+      }
+
+      function refreshDashboardData() {
+        let btn = document.querySelector("button[onclick='refreshDashboardData()']");
+        btn.innerText = "Syncing...";
+        
+        google.script.run.withSuccessHandler(function(response) {
+          btn.innerText = "🔄 Sync Live Data";
+          if(response.success) {
+            gwicData = response.gwicData; mbwicData = response.mbwicData;
+            consolidatedData = response.consolidatedData; capaData = response.capaData;
+            renderGWICs(); renderMBWICs(); renderZonal(); renderConsolidated(); renderCAPA();
+          } else { alert("Sync Failed: " + response.error); }
+        }).getLiveDashboardData();
+      }
+
+      function renderGWICs() {
+        let tbody = document.getElementById('tbody-gwic'); let html = '';
+        gwicData.forEach(r => {
+          let scoreClass = (parseInt(r.score) >= 95) ? 'black-text' : 'red-text';
+          html += `<tr><td>${r.id}</td><td class="text-left">${r.site}</td><td>${r.month}</td><td class="${scoreClass}">${r.score}</td><td>${r.status}</td><td><a href="${r.link}">Report</a></td></tr>`;
+        });
+        if(gwicData.length === 0) html = '<tr><td colspan="6">No data found.</td></tr>';
+        tbody.innerHTML = html;
+      }
+
+      function renderMBWICs() {
+        let tbody = document.getElementById('tbody-mbwic'); let html = '';
+        mbwicData.forEach(r => {
+          let scoreClass = (parseInt(r.score) >= 95) ? 'black-text' : 'red-text';
+          let statusClass = r.status === 'Postponed' || r.status === 'Mar Plan' ? 'bg-red' : '';
+          let linkHtml = r.link !== '' ? `<a href="${r.link}">Report</a>` : '-';
+          html += `<tr><td>${r.id}</td><td class="text-left">${r.site}</td><td>${r.month}</td><td class="${scoreClass}">${r.score}</td><td class="${statusClass}">${r.status}</td><td>${linkHtml}</td></tr>`;
+        });
+        if(mbwicData.length === 0) html = '<tr><td colspan="6">No data found.</td></tr>';
+        tbody.innerHTML = html;
+      }
+
+      function renderZonal() {
+        let tbody = document.getElementById('tbody-zonal'); let html = '';
+        let tCount = 0, tDone = 0, tTotalNC = 0, tClosed = 0, tOpen = 0;
+        zonalData.forEach(r => {
+          tCount += r.count; tDone += r.done; tTotalNC += r.totalNC; tClosed += r.closed; tOpen += r.open;
+          html += `<tr style="border-bottom: 1px solid #ccc;"><td class="text-left" style="padding-left:20px;">${r.zone}</td><td>${r.count}</td><td>${r.done}</td><td>${r.totalNC}</td><td>${r.closed}</td><td>${r.open}</td></tr>`;
+        });
+        html += `<tr style="border-top: 2px solid #000; font-weight:bold;"><td class="text-left" style="padding-left:20px;">Grand Total</td><td>${tCount}</td><td>${tDone}</td><td>${tTotalNC}</td><td>${tClosed}</td><td>${tOpen}</td></tr>`;
+        tbody.innerHTML = html;
+      }
+
+      function renderConsolidated() {
+        let tbody = document.getElementById('tbody-consolidated'); let html = '';
+        consolidatedData.forEach(r => {
+          html += `<tr>`;
+          if (r.isFirstEntityRow) html += `<td rowspan="${r.entityRowspan}" style="background:#f9f9f9; font-weight:bold;">${r.entity}</td>`;
+          html += `<td class="text-left" style="font-weight:bold;">${r.site}</td><td>${r.status}</td><td>${r.ncCount}</td><td>${r.score}</td><td>${r.closure}</td><td class="text-left" style="font-size:0.85em;">${r.category}</td><td class="text-left" style="font-size:0.85em;">${r.obs}</td></tr>`;
+        });
+        if(consolidatedData.length === 0) html = '<tr><td colspan="8">No data found.</td></tr>';
+        tbody.innerHTML = html;
+      }
+
+      function renderCAPA() {
+        let tbody = document.getElementById('tbody-capa'); let html = '';
+        capaData.forEach(r => { html += `<tr><td class="text-left" style="font-weight:bold;">${r.site}</td><td class="red-text" style="font-size:1.2em;">${r.totalNc}</td><td class="text-left">${r.lacking}</td><td class="text-left" style="background:#f1f8e9;">${r.action}</td></tr>`; });
+        if(capaData.length === 0) html = `<tr><td colspan="4" style="padding:20px;">No pending CAPA records found. Excellent compliance!</td></tr>`;
+        tbody.innerHTML = html;
+      }
+
+      function startAudit() {
+        qaName = document.getElementById('qa-name').value.trim(); siteName = document.getElementById('site-name').value; omName = document.getElementById('om-name').value.trim();
+        if(!qaName || !siteName || !omName) { alert("ERROR: ALL AUTHORIZATION FIELDS REQUIRED."); return; }
+        document.getElementById('setup-view').style.display = 'none'; document.getElementById('loader').style.display = 'block'; document.getElementById('loader').innerText = "Loading Module Data...";
+        google.script.run.withSuccessHandler(function(data) {
+          fullChecklist = data;
+          data.forEach(item => { if(!groupedCategories[item.category]) { groupedCategories[item.category] = []; } groupedCategories[item.category].push(item); });
+          document.getElementById('loader').style.display = 'none';
+          const filter = document.getElementById('cat-filter');
+          Object.keys(groupedCategories).forEach(cat => { let opt = document.createElement('option'); opt.value = cat; opt.innerText = cat; filter.appendChild(opt); });
+          renderAuditDashboard();
+        }).getChecklistItems();
+      }
+
+      function renderAuditDashboard() {
+        document.getElementById('audit-view').style.display = 'none'; document.getElementById('dashboard-view').style.display = 'block';
+        const grid = document.getElementById('category-grid'); const selectedFilter = document.getElementById('cat-filter').value;
+        grid.innerHTML = ''; let allCompleted = true;
+        Object.keys(groupedCategories).forEach(cat => {
+          const isCompleted = completedCategories.has(cat);
+          if (!isCompleted) allCompleted = false;
+          if (selectedFilter !== 'all' && cat !== selectedFilter) return;
+          const box = document.createElement('div'); box.className = `cat-box ${isCompleted ? 'completed' : ''}`;
+          box.onclick = () => { if(!isCompleted) launchCategory(cat); };
+          box.innerHTML = `<h4>${cat}</h4><div class="status-icon" style="font-size:1.5em; margin-top:12px;">${isCompleted ? '✅' : '✦'}</div>`;
+          grid.appendChild(box);
+        });
+        if (allCompleted && Object.keys(groupedCategories).length > 0) { document.getElementById('btn-publish').style.display = 'block'; }
+      }
+
+      function filterCategories() { renderAuditDashboard(); }
+
+      function launchCategory(catName) {
+        currentCatName = catName; currentCategoryItems = groupedCategories[catName]; currentIndex = 0;
+        document.getElementById('dashboard-view').style.display = 'none'; document.getElementById('audit-view').style.display = 'block'; loadItem();
+      }
+
+      function loadItem() {
+        if (currentIndex >= currentCategoryItems.length) { completedCategories.add(currentCatName); renderAuditDashboard(); return; }
+        const item = currentCategoryItems[currentIndex];
+        document.getElementById('progress-text').innerText = `SECTOR ${currentIndex + 1} OF ${currentCategoryItems.length}`;
+        document.getElementById('item-category').innerText = item.category;
+        document.getElementById('item-marks').innerText = `MARKS: ${item.marks || 'N/A'}`;
+        document.getElementById('item-review').innerText = item.reviewMethod || "Standard Review";
+        document.getElementById('item-req').innerText = item.requirement;
+        document.getElementById('item-validate').innerText = item.howToValidate ? item.howToValidate.replace(/\\n/g, '\n') : "Visual inspection required.";
+        const ncsText = item.possibleNCs ? item.possibleNCs.replace(/\\n/g, '\n') : "Failure to meet standard.";
+        document.getElementById('item-ncs').innerText = ncsText;
+        document.getElementById('nc-section').style.display = 'none'; document.getElementById('action-buttons').style.display = 'flex'; document.getElementById('btn-submit').style.display = 'block'; 
+        document.getElementById('nc-notes-custom').value = ''; document.getElementById('nc-notes-custom').style.display = 'none'; document.getElementById('nc-image').value = '';
+        const dropdown = document.getElementById('nc-dropdown'); dropdown.innerHTML = '<option value="" disabled selected>Select Anomaly...</option>';
+        const ncArray = ncsText.split(/\n/).map(s => s.replace(/^-/, '').trim()).filter(s => s.length > 0);
+        ncArray.forEach(nc => { let opt = document.createElement('option'); opt.value = nc; opt.innerText = nc; dropdown.appendChild(opt); });
+        let otherOpt = document.createElement('option'); otherOpt.value = "Others"; otherOpt.innerText = "Manual Override"; dropdown.appendChild(otherOpt);
+        const requiresImage = !exemptImageIds.includes(item.id);
+        if (requiresImage) { document.getElementById('file-upload-container').style.display = 'block'; document.getElementById('nc-warning-text').innerText = "EVIDENCE REQUIRED."; document.getElementById('btn-submit').innerText = "Upload Log & Proceed"; } 
+        else { document.getElementById('file-upload-container').style.display = 'none'; document.getElementById('nc-warning-text').innerText = "TEXT LOG REQUIRED."; document.getElementById('btn-submit').innerText = "Save Log & Proceed"; }
+      }
+
+      function handleDropdownChange() { const val = document.getElementById('nc-dropdown').value; document.getElementById('nc-notes-custom').style.display = (val === "Others") ? 'block' : 'none'; }
+      function markStatus(status) { currentStatus = status; if (status === 'Pass') { submitCurrentItem(); } else { document.getElementById('action-buttons').style.display = 'none'; document.getElementById('nc-section').style.display = 'block'; } }
+
+      function submitCurrentItem() {
+        const item = currentCategoryItems[currentIndex]; const requiresImage = !exemptImageIds.includes(item.id); let finalNotes = "";
+        if (currentStatus === 'Fail') {
+          const dropVal = document.getElementById('nc-dropdown').value;
+          if (!dropVal) { alert("ERROR: Select anomaly type."); return; }
+          if (dropVal === "Others") { finalNotes = document.getElementById('nc-notes-custom').value.trim(); if (!finalNotes) { alert("ERROR: Details required."); return; } } else { finalNotes = dropVal; }
+        }
+        const payload = { qaName: qaName, siteName: siteName, omName: omName, id: item.id, category: item.category, requirement: item.requirement, status: currentStatus, notes: finalNotes };
+        if (currentStatus === 'Fail') {
+          const fileInput = document.getElementById('nc-image');
+          if (requiresImage && fileInput.files.length === 0) { alert("ERROR: Visual evidence missing."); return; }
+          document.getElementById('btn-submit').style.display = 'none'; document.getElementById('loader').style.display = 'block';
+          if (requiresImage && fileInput.files.length > 0) {
+            document.getElementById('loader').innerText = "Encoding Image Data...";
+            const file = fileInput.files[0]; const reader = new FileReader();
+            reader.onload = function(e) {
+              const img = new Image();
+              img.onload = function() {
+                const canvas = document.createElement('canvas'); const MAX_WIDTH = 1024; let scale = 1;
+                if (img.width > MAX_WIDTH) { scale = MAX_WIDTH / img.width; } canvas.width = img.width * scale; canvas.height = img.height * scale;
+                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                payload.imageFile = { data: canvas.toDataURL('image/jpeg', 0.7), name: file.name, mimeType: 'image/jpeg' }; finalizeSubmission(payload);
+              }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
+          } else { finalizeSubmission(payload); }
+        } else { document.getElementById('action-buttons').style.display = 'none'; document.getElementById('loader').style.display = 'block'; document.getElementById('loader').innerText = "Saving Checkpoint..."; finalizeSubmission(payload); }
+      }
+
+      function finalizeSubmission(payload) {
+        auditReportData.push(payload);
+        google.script.run.withSuccessHandler(function(response) { document.getElementById('loader').style.display = 'none'; if(response.success) { currentIndex++; loadItem(); } else { alert("Uplink Failed: " + response.error); document.getElementById('action-buttons').style.display = 'flex'; } }).saveResult(payload);
+      }
+
+      function getFinalScore() {
+        if (auditReportData.length === 0) return 0;
+        let passCount = auditReportData.filter(item => item.status === 'Pass').length;
+        return Math.round((passCount / auditReportData.length) * 100);
+      }
+
+      function publishReport() {
+        document.getElementById('main-container').style.display = 'none'; document.body.style.background = "#f5f5f7"; document.body.style.backgroundImage = "none"; document.getElementById('summary-view').style.display = 'block';
+        const today = new Date().toISOString().split('T')[0]; document.getElementById('rep-site').innerText = siteName; document.getElementById('rep-qa').innerText = qaName; document.getElementById('rep-om').innerText = omName; document.getElementById('rep-date').innerText = today;
+        
+        let score = getFinalScore();
+        let scoreEl = document.getElementById('rep-score');
+        scoreEl.innerText = score + "%";
+        scoreEl.style.color = score >= 90 ? "var(--system-green)" : "var(--system-red)";
+
+        const tbody = document.getElementById('report-body'); tbody.innerHTML = '';
+        const ncBody = document.getElementById('nc-report-body'); ncBody.innerHTML = '';
+        auditReportData.sort((a, b) => a.id - b.id);
+        
+        let ncCount = 0;
+        auditReportData.forEach(item => {
+          const isPass = item.status === 'Pass';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${item.id}</td><td><strong>${item.category}</strong></td><td>${item.requirement}</td><td style="color:${isPass?'#000':'red'};font-weight:bold;">${isPass?'P':'NC'}</td><td>${item.notes || 'Positive aspect noted.'}</td>`; 
+          tbody.appendChild(tr);
+
+          if (!isPass) {
+            ncCount++;
+            const ncTr = document.createElement('tr');
+            ncTr.innerHTML = `<td>${item.id}</td><td><strong>${item.category}</strong></td><td>${item.requirement}</td><td style="color:red; font-weight:bold;">${item.notes}</td>`;
+            ncBody.appendChild(ncTr);
+          }
+        });
+
+        if (ncCount === 0) {
+          ncBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; font-weight:bold; color:var(--system-green);">No Non-Conformances found. Excellent compliance!</td></tr>`;
+        }
+      }
+
+      function copyToEmail() {
+        const reportElement = document.getElementById('report-content-to-copy'); const range = document.createRange(); range.selectNode(reportElement);
+        const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);
+        try { document.execCommand('copy'); alert("Report Copied to Clipboard"); } catch (err) { alert("Error: Manual copy required."); } selection.removeAllRanges();
+      }
+
+      function emailReportToSPOCs() {
+        let btn = document.getElementById('btn-email-report');
+        btn.innerText = "Sending Email..."; btn.disabled = true;
+        
+        const payload = { siteName: siteName, qaName: qaName, omName: omName, date: new Date().toISOString().split('T')[0], score: getFinalScore(), reportData: auditReportData };
+        
+        google.script.run.withSuccessHandler(function(res) {
+          if (res.success) { btn.innerText = "✅ Sent Successfully"; btn.style.background = "var(--system-green)"; } 
+          else { alert("Failed to send email: " + res.error); btn.innerText = "📧 Retry Email"; btn.disabled = false; }
+        }).sendAuditReportEmail(payload);
+      }
+    </script>
+  </body>
+</html>
