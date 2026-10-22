@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Arthur Dashboard - Consolidated Reports</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --header-bg: #000000;
+      --header-text: #ffffff;
+      --row-light: #ffffff;
+      --row-dark: #f2f2f2;
+      --border-color: #dddddd;
+      --accent-red: #d32f2f;
+      --accent-green: #2e7d32;
+      --table-header-alt: #d9d9d9;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: #333;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 { text-align: center; margin-bottom: 40px; font-weight: 600; color: #111; }
+    h2 { border-left: 4px solid #000; padding-left: 10px; margin-top: 40px; font-size: 1.4em; }
+
+    /* Dashboard Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Common Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      font-size: 0.9em;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85em;
+      letter-spacing: 0.5px;
+    }
+
+    /* Alternating Row Colors */
+    tbody tr:nth-child(odd) { background-color: var(--row-light); }
+    tbody tr:nth-child(even) { background-color: var(--row-dark); }
+
+    /* Specific Table Headers overrides based on images */
+    .table-alt-header th { background-color: var(--table-header-alt); color: #000; font-size: 1em; text-transform: none; }
+    .table-dark-header th { background-color: #000; color: #fff; }
+    
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .bold { font-weight: bold; }
+    .red-text { color: var(--accent-red); font-weight: bold; }
+    .black-text { color: #000; font-weight: bold; }
+    .bg-red { background-color: #ff4c4c !important; color: #fff !important; font-weight: bold; }
+    
+    a { color: #1976d2; text-decoration: underline; cursor: pointer; }
+    a:hover { color: #0d47a1; }
+
+    /* For Table 4 nested headers */
+    .table-4 th { background-color: #666; color: #fff; border-color: #444; }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <h1>Leadership Audit Dashboard</h1>
+
+  <!-- TABLE 1: GWICs -->
+  <h2>1. GWICs Audit Summary</h2>
+  <table id="table-gwic">
+    <thead>
+      <tr class="table-alt-header">
+        <th colspan="6" class="text-left" style="font-weight:bold; font-size:1.1em; padding:15px;">GWICs</th>
+      </tr>
+      <tr class="table-dark-header">
+        <th width="5%">#</th>
+        <th width="30%" class="text-left">Site Name</th>
+        <th width="15%">Month</th>
+        <th width="15%">Audit Score</th>
+        <th width="20%">Status</th>
+        <th width="15%">Reports Link</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-gwic">
+      <!-- Injected via JS -->
+    </tbody>
+  </table>
+
+  <!-- TABLE 2: MBWICs -->
+  <h2>2. MBWICs Audit Summary</h2>
+  <table id="table-mbwic">
+    <thead>
+      <tr class="table-alt-header">
+        <th colspan="6" class="text-left" style="font-weight:bold; font-size:1.1em; padding:15px;">MBWICs</th>
+      </tr>
+      <tr class="table-dark-header">
+        <th width="5%">#</th>
+        <th width="30%" class="text-left">Site Name</th>
+        <th width="15%">Month</th>
+        <th width="15%">Audit Score</th>
+        <th width="20%">Status</th>
+        <th width="15%">Reports Link</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-mbwic">
+      <!-- Injected via JS -->
+    </tbody>
+  </table>
+
+  <!-- TABLE 3: Zonal Summary -->
+  <h2>3. Zonal Summary</h2>
+  <table id="table-zonal">
+    <thead>
+      <tr class="table-alt-header" style="background:#fff; border-bottom:2px solid #000;">
+        <th width="20%">Zone</th>
+        <th width="16%">Branches Count</th>
+        <th width="16%">Audit done</th>
+        <th width="16%">Total NC</th>
+        <th width="16%">NC closed</th>
+        <th width="16%">NC Open</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-zonal" style="background:#fff;">
+      <!-- Injected via JS -->
+    </tbody>
+  </table>
+
+  <!-- TABLE 4: Consolidated Observations -->
+  <h2>4. Consolidated Audit Observations & CAPA</h2>
+  <table class="table-4" id="table-consolidated">
+    <thead>
+      <tr>
+        <th rowspan="2" width="10%">Entity</th>
+        <th rowspan="2" width="15%">Branch Name</th>
+        <th rowspan="2" width="8%">Status</th>
+        <th rowspan="2" width="8%">No of NCs</th>
+        <th rowspan="2" width="10%">Compliance %age</th>
+        <th rowspan="2" width="10%">Closure Status</th>
+        <th colspan="2" width="39%">Major Observations and CAPA</th>
+      </tr>
+      <tr>
+        <th width="15%">Category</th>
+        <th width="24%">Observations</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-consolidated" style="background:#fff;">
+      <!-- Injected via JS -->
+    </tbody>
+  </table>
+
+  <!-- TABLE 5: Lacking Areas & Next Steps -->
+  <h2>5. Pre-Audit CAPA & Correction Focus</h2>
+  <table id="table-capa">
+    <thead>
+      <tr class="table-dark-header">
+        <th width="20%" class="text-left">Site Name</th>
+        <th width="10%">Total NCs</th>
+        <th width="35%" class="text-left">Lacking Areas (NC Categories)</th>
+        <th width="35%" class="text-left">Corrective Action (CAPA) Before Next Audit</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-capa">
+      <!-- Injected via JS -->
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+  // ==========================================
+  // DATA RENDERING LOGIC
+  // ==========================================
+  // Replace these mock data arrays with data fetched from your Google Sheet via google.script.run
+  
+  const gwicData = [
+    { id: 1, site: 'Bangalore GWIC', month: 'Feb', score: '91%', status: 'Completed', link: '#' },
+    { id: 2, site: 'Delhi GWIC', month: 'Feb', score: '91%', status: 'Completed', link: '#' },
+    { id: 3, site: 'Hyderabad GWIC', month: 'Feb', score: '91%', status: 'Completed', link: '#' },
+    { id: 4, site: 'Mumbai GWIC', month: 'Feb', score: '96%', status: 'Completed', link: '#' }
+  ];
+
+  const mbwicData = [
+    { id: 1, site: 'MBWIC Cochin', month: 'Feb', score: '96%', status: 'Completed', link: '#' },
+    { id: 2, site: 'MBWIC Pune', month: 'Feb', score: '77%', status: 'Completed', link: '#' },
+    { id: 3, site: 'MBWIC Lucknow', month: 'Feb', score: '-', status: 'Postponed', link: '' },
+    { id: 4, site: 'MBWIC Raipur', month: 'Feb', score: '-', status: 'Mar Plan', link: '' }
+  ];
+
+  const zonalData = [
+    { zone: 'Central', count: 5, done: 4, totalNC: 12, closed: 8, open: 4 },
+    { zone: 'East', count: 3, done: 3, totalNC: 5, closed: 5, open: 0 },
+    { zone: 'North 1', count: 4, done: 3, totalNC: 8, closed: 6, open: 2 },
+    { zone: 'South 1', count: 6, done: 6, totalNC: 10, closed: 8, open: 2 },
+    { zone: 'South 2', count: 2, done: 2, totalNC: 2, closed: 2, open: 0 },
+    { zone: 'West 1', count: 4, done: 4, totalNC: 6, closed: 6, open: 0 },
+    { zone: 'West 2', count: 3, done: 3, totalNC: 4, closed: 3, open: 1 }
+  ];
+
+  const consolidatedData = [
+    { entity: 'F1-GWICS', isFirstEntityRow: true, entityRowspan: 4, site: 'Mumbai', status: 'Yes', ncCount: 1, score: '96%', closure: '1 closed', category: '1. Defective Battery Handling', obs: 'checklist on a daily basis is missed.' },
+    { entity: 'F1-GWICS', isFirstEntityRow: false, site: 'Bangalore', status: 'Yes', ncCount: 2, score: '91%', closure: '1 Open<br>1 Closed', category: '2. ESD Compliance', obs: 'Incomplete customer details.' },
+    { entity: 'F1-GWICS', isFirstEntityRow: false, site: 'Hyderabad', status: 'Yes', ncCount: 3, score: '91%', closure: '1 Open<br>2 Closed', category: '3. Job sheets adherence', obs: 'T&C print is missing from jobsheets.' },
+    { entity: 'F1-GWICS', isFirstEntityRow: false, site: 'Delhi', status: 'Yes', ncCount: 2, score: '91%', closure: '2 Closed', category: 'Training pending', obs: 'Training has been provided to SCMs regarding swollen batteries.' },
+    
+    { entity: 'F1-MBWICs', isFirstEntityRow: true, entityRowspan: 3, site: 'Cochin', status: 'Yes', ncCount: 1, score: '96%', closure: '1 Closed', category: '1. Employee Grooming', obs: 'Name badges not used.' },
+    { entity: 'F1-MBWICs', isFirstEntityRow: false, site: 'Pune', status: 'Yes', ncCount: 3, score: '77%', closure: '3 Closed', category: '2. Tools and Accessories', obs: 'Calibration records missing.' },
+    { entity: 'F1-MBWICs', isFirstEntityRow: false, site: 'Gurgoan', status: 'Yes', ncCount: 2, score: '91%', closure: '2 Closed', category: '3. Job sheets adherence', obs: 'Incomplete jobsheets observed.' }
+  ];
+
+  const capaData = [
+    { site: 'Delhi GWIC', totalNc: 2, lacking: 'Customer Detail Capture, Job Sheet Signatures', action: 'Conduct mandatory front-desk process refresher. Implement daily QA check on 10 random job sheets by OM.' },
+    { site: 'MBWIC Pune', totalNc: 3, lacking: 'Tool Calibration, ESD Protocols', action: 'Order new calibration tags. Ensure all multimeters are sent to lab. Strictly enforce ESD wristband daily log.' }
+  ];
+
+  // Render Table 1
+  function renderGWICs() {
+    const tbody = document.getElementById('tbody-gwic');
+    let html = '';
+    gwicData.forEach(r => {
+      let scoreClass = r.score === '96%' ? 'black-text' : 'red-text';
+      html += `<tr>
+        <td>${r.id}</td>
+        <td class="text-left">${r.site}</td>
+        <td>${r.month}</td>
+        <td class="${scoreClass}">${r.score}</td>
+        <td>${r.status}</td>
+        <td><a href="${r.link}">Report</a></td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+
+  // Render Table 2
+  function renderMBWICs() {
+    const tbody = document.getElementById('tbody-mbwic');
+    let html = '';
+    mbwicData.forEach(r => {
+      let scoreClass = r.score.includes('77') || r.score.includes('91') ? 'red-text' : 'black-text';
+      let statusClass = r.status === 'Postponed' || r.status === 'Mar Plan' ? 'bg-red' : '';
+      let linkHtml = r.link !== '' ? `<a href="${r.link}">Report</a>` : '-';
+      
+      html += `<tr>
+        <td>${r.id}</td>
+        <td class="text-left">${r.site}</td>
+        <td>${r.month}</td>
+        <td class="${scoreClass}">${r.score}</td>
+        <td class="${statusClass}">${r.status}</td>
+        <td>${linkHtml}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+
+  // Render Table 3
+  function renderZonal() {
+    const tbody = document.getElementById('tbody-zonal');
+    let html = '';
+    let tCount = 0, tDone = 0, tTotalNC = 0, tClosed = 0, tOpen = 0;
+    
+    zonalData.forEach(r => {
+      tCount += r.count; tDone += r.done; tTotalNC += r.totalNC; tClosed += r.closed; tOpen += r.open;
+      html += `<tr style="border-bottom: 1px solid #ccc;">
+        <td class="text-left" style="padding-left:20px;">${r.zone}</td>
+        <td>${r.count}</td>
+        <td>${r.done}</td>
+        <td>${r.totalNC}</td>
+        <td>${r.closed}</td>
+        <td>${r.open}</td>
+      </tr>`;
+    });
+    // Add Grand Total
+    html += `<tr style="border-top: 2px solid #000; font-weight:bold;">
+      <td class="text-left" style="padding-left:20px;">Grand Total</td>
+      <td>${tCount}</td><td>${tDone}</td><td>${tTotalNC}</td><td>${tClosed}</td><td>${tOpen}</td>
+    </tr>`;
+    tbody.innerHTML = html;
+  }
+
+  // Render Table 4
+  function renderConsolidated() {
+    const tbody = document.getElementById('tbody-consolidated');
+    let html = '';
+    consolidatedData.forEach(r => {
+      html += `<tr>`;
+      if (r.isFirstEntityRow) {
+        html += `<td rowspan="${r.entityRowspan}" style="background:#f9f9f9; font-weight:bold;">${r.entity}</td>`;
+      }
+      html += `
+        <td class="text-left bold">${r.site}</td>
+        <td>${r.status}</td>
+        <td>${r.ncCount}</td>
+        <td>${r.score}</td>
+        <td>${r.closure}</td>
+        <td class="text-left" style="font-size:0.85em;">${r.category}</td>
+        <td class="text-left" style="font-size:0.85em;">${r.obs}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+
+  // Render Table 5
+  function renderCAPA() {
+    const tbody = document.getElementById('tbody-capa');
+    let html = '';
+    capaData.forEach(r => {
+      html += `<tr>
+        <td class="text-left bold">${r.site}</td>
+        <td class="red-text" style="font-size:1.2em;">${r.totalNc}</td>
+        <td class="text-left">${r.lacking}</td>
+        <td class="text-left" style="background:#f1f8e9;">${r.action}</td>
+      </tr>`;
+    });
+    if(capaData.length === 0) {
+      html = `<tr><td colspan="4" style="padding:20px;">No pending CAPA records found.</td></tr>`;
+    }
+    tbody.innerHTML = html;
+  }
+
+  // Initialize all tables
+  window.onload = function() {
+    renderGWICs();
+    renderMBWICs();
+    renderZonal();
+    renderConsolidated();
+    renderCAPA();
+  };
+
+</script>
+</body>
+</html>
